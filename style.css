@@ -125,3 +125,46 @@ body {
         min-height: auto;
     }
 }
+.chart-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+
+.chart-container-wide {
+    height: 260px;
+    position: relative;
+}
+
+.table-row-alert {
+    background-color: #FEF3C7;
+}
+
+.badge-warning-custom {
+    background-color: #F59E0B;
+    color: #0F172A;
+}
+
+.inventory-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #0F172A;
+    color: #FFFFFF;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 1050;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        height: 180px;
+    }
+}

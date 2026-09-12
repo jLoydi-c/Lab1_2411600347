@@ -1,78 +1,152 @@
-// check if someone actually logged in first, if not send them back to login
 const currentUser = localStorage.getItem('loggedInUser');
 
 if (!currentUser) {
     window.location.href = 'index.html';
 }
 
-// picks the greeting based on what time it is on the computer's clock
-function setGreeting() {
-    const hour = new Date().getHours();
-    let greetingText = 'Good evening';
-
-    if (hour < 12) {
-        greetingText = 'Good morning';
-    } else if (hour < 18) {
-        greetingText = 'Good afternoon';
+function buildProductRow(product) {
+    let statusBadge = '';
+    if (product.status === 'in-stock') {
+        statusBadge = '<span class="badge badge-success-custom">In Stock</span>';
+    } else if (product.status === 'low-stock') {
+        statusBadge = '<span class="badge badge-warning-custom">Low Stock</span>';
+    } else {
+        statusBadge = '<span class="badge badge-danger-custom">Out of Stock</span>';
     }
 
-    document.getElementById('greeting').innerHTML =
-        greetingText + ', <span id="usernameDisplay">' + currentUser + '</span>';
+    const rowClass = product.status !== 'in-stock' ? 'table-row-alert' : '';
+
+    return `
+        <tr class="${rowClass}">
+            <td>${product.sku}</td>
+            <td>${product.name}</td>
+            <td>${product.category}</td>
+            <td>${product.quantity}</td>
+            <td>$${product.unit_price.toFixed(2)}</td>
+            <td>$${(product.quantity * product.unit_price).toFixed(2)}</td>
+            <td>${statusBadge}</td>
+        </tr>
+    `;
 }
 
-function updateStatistics() {
-    // fills in the 4 stat cards with sample data
-    // just using sample numbers for the exercise
-    const stats = [
-        { title: 'Steps Today', value: '8,542' },
-        { title: 'Calories Burned', value: '2,150 kcal' },
-        { title: 'Workouts This Week', value: '4' },
-        { title: 'Avg Heart Rate', value: '118 bpm' }
-    ];
+function renderProductTable() {
+    const tableBody = document.getElementById('inventoryTableBody');
+    const products = getProducts();
 
-    for (let i = 0; i < stats.length; i++) {
-        document.getElementById('stat' + (i + 1) + '-title').textContent = stats[i].title;
-        document.getElementById('stat' + (i + 1) + '-value').textContent = stats[i].value;
+    if (products.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-3">No products match your filters.</td></tr>';
+        return;
     }
+
+    tableBody.innerHTML = products.map(buildProductRow).join('');
 }
 
-// builds the workout history table row by row
-function populateActivityTable() {
-    const activities = [
-        { date: 'Aug 28, 2026', workout: 'Morning Run', duration: '32 min', calories: '410', status: 'Completed' },
-        { date: 'Aug 27, 2026', workout: 'Upper Body Strength', duration: '45 min', calories: '380', status: 'Completed' },
-        { date: 'Aug 26, 2026', workout: 'Yoga and Stretching', duration: '20 min', calories: '110', status: 'Completed' },
-        { date: 'Aug 25, 2026', workout: 'HIIT Cardio', duration: '25 min', calories: '320', status: 'Missed' }
-    ];
+function renderStatCards() {
+    const stats = getStockStatistics();
+    document.getElementById('stat1-value').textContent = stats.totalProducts;
+    document.getElementById('stat2-value').textContent = '$' + stats.totalValue.toFixed(2);
+    document.getElementById('stat3-value').textContent = stats.lowStockCount;
+    document.getElementById('stat4-value').textContent = stats.outOfStockCount;
+}
 
-    const tableBody = document.getElementById('activityTableBody');
-    tableBody.innerHTML = '';
+function renderLowStockAlert() {
+    const lowStockItems = getLowStockProducts();
+    const alertBox = document.getElementById('lowStockAlert');
 
-    activities.forEach(function (activity) {
-        // green badge if completed, red badge if missed
-        const badgeClass = activity.status === 'Completed' ? 'badge-success-custom' : 'badge-danger-custom';
+    if (lowStockItems.length === 0) {
+        alertBox.classList.add('d-none');
+        return;
+    }
 
-        const row = '<tr>' +
-            '<td>' + activity.date + '</td>' +
-            '<td>' + activity.workout + '</td>' +
-            '<td>' + activity.duration + '</td>' +
-            '<td>' + activity.calories + ' kcal</td>' +
-            '<td><span class="badge ' + badgeClass + '">' + activity.status + '</span></td>' +
-            '</tr>';
+    const itemNames = lowStockItems.map(function (p) { return p.name; }).join(', ');
+    alertBox.textContent = 'Attention: ' + lowStockItems.length + ' item(s) need restocking - ' + itemNames;
+    alertBox.classList.remove('d-none');
+}
 
-        tableBody.insertAdjacentHTML('beforeend', row);
+function populateCategoryDropdown() {
+    const categorySummary = getCategorySummary();
+    const dropdown = document.getElementById('categoryFilter');
+
+    Object.keys(categorySummary).forEach(function (category) {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        dropdown.appendChild(option);
     });
 }
-// clears the saved login and sends the user back to the login page
+
+function refreshDashboard() {
+    renderProductTable();
+    renderStatCards();
+    renderLowStockAlert();
+    renderAllCharts();
+}
+
+function showNotification(message) {
+    const toast = document.createElement('div');
+    toast.className = 'inventory-toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    setTimeout(function () { toast.remove(); }, 3000);
+}
+
+document.getElementById('categoryFilter').addEventListener('change', function (e) {
+    filterByCategory(e.target.value);
+    refreshDashboard();
+});
+
+document.getElementById('stockStatusFilter').addEventListener('change', function (e) {
+    filterByStockStatus(e.target.value);
+    refreshDashboard();
+});
+
+document.getElementById('applyPriceFilter').addEventListener('click', function () {
+    const min = document.getElementById('minPrice').value;
+    const max = document.getElementById('maxPrice').value;
+    filterByPriceRange(min === '' ? null : parseFloat(min), max === '' ? null : parseFloat(max));
+    refreshDashboard();
+});
+
+document.getElementById('resetFilters').addEventListener('click', function () {
+    resetFilters();
+    document.getElementById('categoryFilter').value = 'all';
+    document.getElementById('stockStatusFilter').value = 'all';
+    document.getElementById('minPrice').value = '';
+    document.getElementById('maxPrice').value = '';
+    document.getElementById('searchInput').value = '';
+    refreshDashboard();
+});
+
+document.getElementById('searchInput').addEventListener('input', function (e) {
+    searchProducts(e.target.value);
+    renderProductTable();
+});
+
+document.getElementById('exportBtn').addEventListener('click', function () {
+    const csv = exportToCSV(getProducts());
+    downloadCSV(csv, 'inventory_export.csv');
+});
+
 document.getElementById('logoutBtn').addEventListener('click', function () {
     localStorage.removeItem('loggedInUser');
     window.location.href = 'index.html';
 });
 
-// only run all of this stuff if we know someone's actually logged in
-if (currentUser) {
+async function startDashboard() {
     document.getElementById('usernameDisplay').textContent = currentUser;
-    setGreeting();
-    updateStatistics();
-    populateActivityTable();
+
+    await initializeData();
+    populateCategoryDropdown();
+    refreshDashboard();
+
+    setInterval(function () {
+        const updatedProduct = simulateInventoryUpdate();
+        refreshDashboard();
+        showNotification(updatedProduct.name + ' stock updated to ' + updatedProduct.quantity);
+    }, 15000);
+}
+
+if (currentUser) {
+    startDashboard();
 }

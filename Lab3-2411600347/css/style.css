@@ -1,0 +1,127 @@
+/* color scheme
+   primary    - #0F172A
+   secondary  - #2563EB
+   background - #FFFFFF
+   text       - #334155
+   accent     - #F59E0B
+   success    - #10B981
+   danger     - #EF4444
+*/
+
+body {
+    font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+    background-color: #FFFFFF;
+    color: #334155;
+}
+
+/* login page */
+.login-body {
+    background: linear-gradient(135deg, #0F172A 0%, #2563EB 100%);
+}
+
+.login-card {
+    width: 380px;
+    border: none;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.login-header {
+    background-color: #0F172A;
+    color: #FFFFFF;
+    padding: 24px;
+}
+
+.login-header p {
+    color: #F59E0B;
+    font-size: 0.9rem;
+}
+
+.btn-login {
+    background-color: #2563EB;
+    color: #FFFFFF;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 10px;
+    transition: background-color 0.25s ease;
+}
+
+.btn-login:hover {
+    background-color: #F59E0B;
+    color: #0F172A;
+}
+
+/* navbar */
+.app-navbar {
+    background-color: #0F172A;
+    border-bottom: 3px solid #F59E0B;
+}
+
+/* sidebar */
+.app-sidebar {
+    background-color: #F1F5F9;
+    min-height: calc(100vh - 56px);
+    border-right: 1px solid #E2E8F0;
+}
+
+.app-sidebar .nav-link {
+    color: #334155;
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.app-sidebar .nav-link:hover,
+.app-sidebar .nav-link.active {
+    background-color: #2563EB;
+    color: #FFFFFF;
+}
+
+/* stat cards */
+.stat-card {
+    border: none;
+    border-left: 5px solid #F59E0B;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+    transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+}
+
+.stat-title {
+    color: #64748B;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    color: #0F172A;
+    font-weight: 700;
+}
+
+/* activity table */
+.app-card-header {
+    background-color: #0F172A;
+    color: #FFFFFF;
+    font-weight: 600;
+}
+
+.badge-success-custom {
+    background-color: #10B981;
+    color: #FFFFFF;
+}
+
+.badge-danger-custom {
+    background-color: #EF4444;
+    color: #FFFFFF;
+}
+
+@media (max-width: 768px) {
+    .app-sidebar {
+        min-height: auto;
+    }
+}

@@ -32,7 +32,7 @@
         <div class="mb-3">
             <label class="form-label">Category</label>
             <select name="category" class="form-select">
-                @foreach (['Equipment', 'Supplements', 'Apparel', 'Accessories', 'Recovery'] as $cat)
+                @foreach (['Lumber', 'Hardware', 'Tools', 'Electrical', 'Plumbing', 'Paint'] as $cat)
                     <option value="{{ $cat }}" {{ old('category', $product->category) == $cat ? 'selected' : '' }}>{{ $cat }}
                     </option>
                 @endforeach

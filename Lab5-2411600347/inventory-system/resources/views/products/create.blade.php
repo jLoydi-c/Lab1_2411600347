@@ -1,11 +1,8 @@
 @extends('layouts.app')
-
 @section('title', 'Add Product')
-
 @section('content')
 
     <h2 class="mb-3">Add New Product</h2>
-
     <form action="{{ route('products.store') }}" method="POST" class="card p-4 bg-white">
         @csrf
 

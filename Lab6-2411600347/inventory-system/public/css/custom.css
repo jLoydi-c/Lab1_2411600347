@@ -1,0 +1,74 @@
+:root {
+    --primary: #0F172A;
+    --secondary: #2563EB;
+    --background: #FFFFFF;
+    --text: #334155;
+    --accent: #F59E0B;
+    --success: #10B981;
+    --danger: #EF4444;
+}
+
+body {
+    background-color: #F1F5F9;
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+}
+
+.app-navbar {
+    background-color: var(--primary);
+    border-bottom: 3px solid var(--accent);
+}
+
+.btn-login {
+    background-color: var(--secondary);
+    color: #FFFFFF;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    padding: 8px 20px;
+}
+
+.btn-login:hover {
+    background-color: var(--accent);
+    color: var(--primary);
+}
+
+.stat-card {
+    border: none;
+    border-left: 5px solid var(--accent);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+    background-color: #FFFFFF;
+}
+
+.stat-title {
+    color: #64748B;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.stat-value {
+    color: var(--primary);
+    font-weight: 700;
+}
+/* lab 6 additions */
+.notif-menu {
+    width: 340px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notif-item {
+    white-space: normal;
+}
+
+.chart-card,
+.app-card-header {
+    border: none;
+}
+
+.app-card-header {
+    background-color: var(--primary);
+    color: #FFFFFF;
+    font-weight: 600;
+}
